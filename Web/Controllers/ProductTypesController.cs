@@ -16,7 +16,7 @@ namespace Web.Controllers
         // GET: ProductTypes
         public ActionResult Index()
         {
-            return View(new ProductType().GetAll());
+            return View(new ProductType().All);
         }
 
         // GET: ProductTypes/Details/5

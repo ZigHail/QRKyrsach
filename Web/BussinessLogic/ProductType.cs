@@ -9,6 +9,10 @@ namespace Web.BussinessLogic
 {
     public class ProductType : CRUD<Models.ProductType>
     {
+        public ProductType()
+        {
+            All = GetAll();
+        }
         public override List<Models.ProductType> GetAll()
         {
             using (var db = new ProductContext())
@@ -47,11 +51,6 @@ namespace Web.BussinessLogic
             }
         }
 
-        //public static void Add(Models.ProductType type)
-        //{
-        //    var db = new ProductContext();
-        //    db.ProductTypes.Add(type);
-        //    db.SaveChanges();
-        //}
+        
     }
 }

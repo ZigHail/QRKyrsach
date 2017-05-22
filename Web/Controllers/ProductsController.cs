@@ -16,7 +16,7 @@ namespace Web.Controllers
         // GET: Products
         public ActionResult Index()
         {            
-            return View(new Product().GetAll());
+            return View(new Product().All);
         }
 
         // GET: Products/Details/5
@@ -35,7 +35,7 @@ namespace Web.Controllers
         // GET: Products/Create
         public ActionResult Create()
         {            
-            ViewBag.ProductTypeId = new SelectList(new ProductType().GetAll(), "Id", "Type");
+            ViewBag.ProductTypeId = new SelectList(new ProductType().All, "Id", "Type");
             return View();
         }
 
@@ -52,7 +52,7 @@ namespace Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ProductTypeId = new SelectList(new ProductType().GetAll(), "Id", "Type", product.ProductTypeId);
+            ViewBag.ProductTypeId = new SelectList(new ProductType().All, "Id", "Type", product.ProductTypeId);
             return View(product);
         }
 
@@ -82,7 +82,7 @@ namespace Web.Controllers
                 new Product().Update(product);
                 return RedirectToAction("Index");
             }
-            ViewBag.ProductTypeId = new SelectList(new ProductType().GetAll(), "Id", "Type", product.ProductTypeId);
+            ViewBag.ProductTypeId = new SelectList(new ProductType().All, "Id", "Type", product.ProductTypeId);
             return View(product);
         }
 

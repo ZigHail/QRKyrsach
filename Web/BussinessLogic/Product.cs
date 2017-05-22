@@ -13,6 +13,7 @@ namespace Web.BussinessLogic
 
         public Product()
         {
+            All = GetAll();
         }
         public Product(Models.Product food)
         {

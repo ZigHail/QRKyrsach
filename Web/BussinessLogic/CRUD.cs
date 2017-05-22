@@ -14,6 +14,9 @@ namespace Web.BussinessLogic
         public abstract void Update(T t);
         public abstract T Read(int id);
 
+        public List<T> All { get; set; }
+        
+
         public virtual List<T> GetAll()
         {
             return new List<T>();
