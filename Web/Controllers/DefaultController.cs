@@ -32,7 +32,7 @@ namespace Web.Controllers
 
         public List<Models.ProductType> GetAllTypes()
         {
-            return BussinessLogic.ProductType.GetAllProductTypes();
+            return new BussinessLogic.ProductType().GetAll();
         }
 
         public IHttpActionResult AddProduct(Models.Product product)

@@ -1,26 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Web.Models;
 
 namespace Web.BussinessLogic
 {
-    public class ProductType : IAdd<Models.ProductType>
+    public class ProductType : CRUD<Models.ProductType>
     {
-        public static List<Models.ProductType> GetAllProductTypes()
+        public override List<Models.ProductType> GetAll()
         {
             using (var db = new ProductContext())
             {
                 return db.ProductTypes.ToList();
             }
-        }        
+        }
 
-        public void Add(Models.ProductType t)
+        public override void Add(Models.ProductType t)
         {
             var db = new ProductContext();
             db.ProductTypes.Add(t);
             db.SaveChanges();
+        }
+
+        public override void Delete(Models.ProductType t)
+        {
+            using (var db = new ProductContext())
+            {
+                db.ProductTypes.Remove(t);
+                db.SaveChanges();
+            }
+        }
+
+        public override Models.ProductType Read(int id)
+        {
+            return new ProductContext().ProductTypes.Find(id);
+        }
+
+        public override void Update(Models.ProductType t)
+        {
+            using (var db = new ProductContext())
+            {
+                db.Entry(t).State = EntityState.Modified;
+                db.SaveChanges();
+            }
         }
 
         //public static void Add(Models.ProductType type)
@@ -29,5 +53,5 @@ namespace Web.BussinessLogic
         //    db.ProductTypes.Add(type);
         //    db.SaveChanges();
         //}
-}
+    }
 }

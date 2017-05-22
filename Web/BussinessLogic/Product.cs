@@ -7,7 +7,7 @@ using System.Data.Entity;
 
 namespace Web.BussinessLogic
 {
-    public class Product : IAdd<Models.Product>
+    public class Product : CRUD<Models.Product>
     {
         private Models.Product product { get; set; }
 
@@ -16,8 +16,7 @@ namespace Web.BussinessLogic
         }
         public Product(Models.Product food)
         {
-            this.product = food;
-
+            product = food;
         }
         public Product(string ean13)
         {
@@ -33,7 +32,7 @@ namespace Web.BussinessLogic
         {
             Add(product);
         }
-        public void Add(Models.Product product)
+        public override void Add(Models.Product product)
         {
             using (var db = new ProductContext())
             {
@@ -46,7 +45,7 @@ namespace Web.BussinessLogic
         {
             Delete(product);
         }
-        public static void Delete(Models.Product product)
+        public override void Delete(Models.Product product)
         {
             using (var db = new ProductContext())
             {
@@ -59,13 +58,13 @@ namespace Web.BussinessLogic
         {
             return product;
         }
+        public override Models.Product Read(int id)
+        {
+            return new ProductContext().Products.Find(id);
+        }
         public static Models.Product Read(string ean13)
         {
-            using (var db = new ProductContext())
-            {
-                var p = db.Products.FirstOrDefault(cf => cf.EAN13 == ean13);
-                return p;
-            }
+            return new ProductContext().Products.FirstOrDefault(cf => cf.EAN13 == ean13);
         }
 
         public void Update()
@@ -76,23 +75,20 @@ namespace Web.BussinessLogic
                 Update(currentProduct);
             }
         }
-        public static void Update(Models.Product product)
+        public override void Update(Models.Product product)
         {
             using (var db = new ProductContext())
             {
-                var currentProduct = db.Products.FirstOrDefault(cf => cf.EAN13 == product.EAN13);
-                currentProduct.EAN13 = product.EAN13;
-
-                currentProduct.Manufacturer = product.Manufacturer;
-                currentProduct.Name = product.Name;
-                currentProduct.Price = product.Price;
-                currentProduct.ProductTypeId = product.ProductTypeId;
-                currentProduct.ShelfLifeInDays = product.ShelfLifeInDays;
+                db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();
             }
-        }
+        }        
+        
 
-        public Models.ProductType GetProductType() => product.ProductType;
+        public Models.ProductType GetProductType()
+        {
+            return product.ProductType;
+        }
 
         public static List<string> GetAllEAN13()
         {
@@ -100,6 +96,14 @@ namespace Web.BussinessLogic
             {
                 return db.Products.Select(p => p.EAN13).ToList();
             }
+        }
+
+        public override List<Models.Product> GetAll()
+        {
+            return new ProductContext()
+            .Products
+            .Include(p => p.ProductType)
+            .ToList();
         }
     }
 }

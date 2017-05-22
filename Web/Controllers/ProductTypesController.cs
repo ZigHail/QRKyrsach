@@ -6,32 +6,29 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using Web.Models;
+using Web.BussinessLogic;
 
 namespace Web.Controllers
 {
     public class ProductTypesController : Controller
-    {
-        private ProductContext db = new ProductContext();
+    {        
 
         // GET: ProductTypes
         public ActionResult Index()
         {
-            return View(db.ProductTypes.ToList());
+            return View(new ProductType().GetAll());
         }
 
         // GET: ProductTypes/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
+            if (id == null)            
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            ProductType productType = db.ProductTypes.Find(id);
-            if (productType == null)
-            {
+
+            var productType = new ProductType().Read((int)id);
+            if (productType == null)            
                 return HttpNotFound();
-            }
+            
             return View(productType);
         }
 
@@ -46,12 +43,11 @@ namespace Web.Controllers
         // сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Type,IsFood")] ProductType productType)
+        public ActionResult Create([Bind(Include = "Id,Type,IsFood")] Models.ProductType productType)
         {
             if (ModelState.IsValid)
             {
-                db.ProductTypes.Add(productType);
-                db.SaveChanges();
+                new ProductType().Add(productType);                
                 return RedirectToAction("Index");
             }
 
@@ -61,15 +57,13 @@ namespace Web.Controllers
         // GET: ProductTypes/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
+            if (id == null)            
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            ProductType productType = db.ProductTypes.Find(id);
-            if (productType == null)
-            {
+            
+            var productType = new ProductType().Read((int)id);
+            if (productType == null)            
                 return HttpNotFound();
-            }
+            
             return View(productType);
         }
 
@@ -78,12 +72,11 @@ namespace Web.Controllers
         // сведения см. в статье https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Type,IsFood")] ProductType productType)
+        public ActionResult Edit([Bind(Include = "Id,Type,IsFood")] Models.ProductType productType)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(productType).State = EntityState.Modified;
-                db.SaveChanges();
+                new ProductType().Update(productType);
                 return RedirectToAction("Index");
             }
             return View(productType);
@@ -92,15 +85,13 @@ namespace Web.Controllers
         // GET: ProductTypes/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
+            if (id == null)            
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            ProductType productType = db.ProductTypes.Find(id);
-            if (productType == null)
-            {
+            
+            var productType = new ProductType().Read((int)id);
+            if (productType == null)            
                 return HttpNotFound();
-            }
+            
             return View(productType);
         }
 
@@ -109,19 +100,9 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            ProductType productType = db.ProductTypes.Find(id);
-            db.ProductTypes.Remove(productType);
-            db.SaveChanges();
+            new ProductType().Delete(new ProductType().Read(id));
             return RedirectToAction("Index");
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        
     }
 }
